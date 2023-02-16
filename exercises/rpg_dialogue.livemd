@@ -82,7 +82,9 @@ defmodule Character do
   iex> %Character{name: "Frodo"}
   ** (ArgumentError) the following keys must also be given when building struct Character: [:name]
   """
-  defstruct []
+  @enforced_key [:name]
+
+  defstruct @enforced_key ++ [:class, :weapon]
 
   @doc """
   Introduce the character by name.
@@ -95,7 +97,8 @@ defmodule Character do
     iex> Character.introduce(%Character{name: "Aragorn"})
     "My name is Aragorn."
   """
-  def introduce(character) do
+  def introduce(char) do
+    "My name is #{char.name}."
   end
 
   @doc """
@@ -109,7 +112,8 @@ defmodule Character do
     iex> Character.attack(%Character{name: "Aragorn", weapon: "sword"})
     "I attack with my sword!"
   """
-  def attack(character) do
+  def attack(char) do
+    "I attack with my #{char.weapon}!"
   end
 
   @doc """
@@ -123,7 +127,8 @@ defmodule Character do
     iex> Character.class(%Character{name: "Aragorn", class: "ranger"})
     "I am a ranger."
   """
-  def class(character) do
+  def class(char) do
+    "I am a #{char.class}."
   end
 
   @doc """
@@ -137,8 +142,13 @@ defmodule Character do
     iex> Character.war_cry(%Character{name: "Aragorn", class: "ranger"})
     "My name is Aragorn and I am a ranger!"
   """
-  def war_cry(character) do
+  def war_cry(char) do
+    "My name is #{char.name} and I am a #{char.class}!"
   end
+
+  # def war_cry2(name, class) do
+  #   "My name is #{name} and I am a #{class}"
+  # end
 
   @doc """
   Declare that one character has defeated another.
@@ -151,9 +161,31 @@ defmodule Character do
     iex> Character.defeat(%Character{name: "Aragorn"}, %Character{name: "Gimli", class: "warrior"})
     "My name is Aragorn and I have defeated the warrior Gimli!"
   """
-  def defeat(character1, character2) do
+  def defeat(char1, char2) do
+    "My name is #{char1.name} and I have defeated the #{char2.class} #{char2.name}!"
   end
 end
+
+# defmodule Test do
+# import Character
+
+# def test do
+#   aragorn = %Character{name: "Aragorn", class: "ranger", weapon: "sword"}
+#   gandalf = %Character{name: "Gandalf", class: "wizard", weapon: "staff"}
+#   Character.introduce(aragorn)
+#   Character.attack(aragorn)
+#   Character.class(aragorn)
+#   Character.war_cry(aragorn)
+#   Character.war_cry2(aragorn.name, aragorn.class)
+#   Character.defeat(aragorn, gandalf)
+# end
+# end
+
+# Test.test
+```
+
+```elixir
+
 ```
 
 ### Bonus: Character Instances
