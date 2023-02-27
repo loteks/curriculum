@@ -185,7 +185,8 @@ Path.join(path1, path2)
 Experiment with the functions above. Refer to the documentation for examples you can try.
 
 ```elixir
-
+path = __DIR__
+Path.split(path)
 ```
 
 ## Bang Functions
