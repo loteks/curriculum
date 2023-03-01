@@ -96,6 +96,7 @@ defmodule Stack do
   # Client API (Behaviour)
   def start_link(opts) do
     # IO.inspect("start_link", label: "Client")
+    # Note: second arg (opts) is what's passed to init
     GenServer.start_link(__MODULE__, opts)
   end
 
@@ -110,9 +111,9 @@ defmodule Stack do
   end
 
   # Server API (Implementation)
-  def init(_init_arg) do
+  def init(init_args) do
     # IO.inspect("init", label: "Server")
-    {:ok, []}
+    {:ok, init_args}
   end
 
   def handle_call({:push, element}, _from, state) do
