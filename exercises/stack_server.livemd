@@ -111,11 +111,13 @@ defmodule Stack do
   end
 
   # Server API (Implementation)
+  @impl true
   def init(init_args) do
     # IO.inspect("init", label: "Server")
     {:ok, init_args}
   end
 
+  @impl true
   def handle_call({:push, element}, _from, state) do
     # IO.inspect("handle_call :push #{element}", label: "Server")
     new_state = [element | state]
@@ -123,6 +125,7 @@ defmodule Stack do
     {:reply, response, new_state}
   end
 
+  @impl true
   def handle_call(:pop, _from, state) do
     # IO.inspect("handle_call :pop", label: "Server")
     new_state = tl(state)
@@ -130,13 +133,6 @@ defmodule Stack do
     {:reply, response, new_state}
   end
 end
-
-# {:ok, pid} = Stack.start_link([])
-# Stack.push(pid, 2)
-# Stack.push(pid, 2)
-# Stack.push(pid, 2)
-# Stack.pop(pid)
-# Stack.pop(pid)
 ```
 
 ## Mark As Completed
