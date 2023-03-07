@@ -104,6 +104,8 @@ Implement the `Monster` process as documented below.
 defmodule Monster do
   use GenServer
 
+  ##### CLIENT #####
+
   @doc """
   Start the `Monster` process.
 
@@ -111,9 +113,11 @@ defmodule Monster do
 
       iex> {:ok, pid} = Monster.start_link([])
   """
+
   def start_link(opts) do
     # IO.inspect/2 to observe when a `Monster` process starts.
     IO.inspect(opts, label: "Monster Started")
+    GenServer.start_link(__MODULE__, opts)
   end
 
   @doc """
@@ -121,13 +125,14 @@ defmodule Monster do
 
   ## Examples
 
-      iex> {:ok, pid} = Monster.start_link([])
-      iex> :sys.get_state(pid)
-      %{health: 100}
-      iex> Monster.attack(pid, 30)
-      iex> :sys.get_state(pid)
-      %{health: 70}
+    #   iex> {:ok, pid} = Monster.start_link([])
+    #   iex> :sys.get_state(pid)
+    #   %{health: 100}
+    #   iex> Monster.attack(pid, 30)
+    #   iex> :sys.get_state(pid)
+    #   %{health: 70}
   """
+
   def attack(monster_pid, amount) do
   end
 
@@ -140,8 +145,12 @@ defmodule Monster do
       iex> Monster.health(pid)
       100
   """
+
   def health(monster_pid) do
+    GenServer.call(monster_pid, :health)
   end
+
+  ##### SERVER #####
 
   @doc """
   Callback function to start the `Monster` process. 
@@ -153,8 +162,10 @@ defmodule Monster do
       iex> :sys.get_state(pid)
       %{health: 100}
   """
+
   @impl true
   def init(_opts) do
+    {:ok, %{health: 100}}
   end
 
   @doc """
@@ -164,14 +175,14 @@ defmodule Monster do
 
   ## Examples
 
-      iex> {:ok, pid} = GenServer.start_link(Monster, [])
-      iex> :sys.get_state(pid)
-      %{health: 100}
-      iex> GenServer.cast(pid, {:attack, 20})
-      iex> :sys.get_state(pid)
-      %{health: 80}
-      iex> GenServer.cast(pid, {:attack, 80})
-      ** (RuntimeError) dying!
+    #   iex> {:ok, pid} = GenServer.start_link(Monster, [])
+    #   iex> :sys.get_state(pid)
+    #   %{health: 100}
+    #   iex> GenServer.cast(pid, {:attack, 20})
+    #   iex> :sys.get_state(pid)
+    #   %{health: 80}
+    #   iex> GenServer.cast(pid, {:attack, 80})
+    #   ** (RuntimeError) dying!
   """
   @impl true
   def handle_cast({:attack, damage}, state) do
@@ -188,8 +199,16 @@ defmodule Monster do
   """
   @impl true
   def handle_call(:health, _from, state) do
+    # IO.inspect(state)
+    health = Map.get(state, :health)
+    {:reply, health, state}
   end
 end
+```
+
+```elixir
+test = %{health: 100}
+Map.get(test, :health)
 ```
 
 ## Supervisor

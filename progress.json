@@ -97,7 +97,7 @@
   "io_reading": false,
   "tuples_reading": false,
   "ranges_reading": false,
-  "task_reading": false,
+  "task_reading": true,
   "executables_reading": false,
   "rdbms_reading": false,
   "fun_formulas_exercise": false,
