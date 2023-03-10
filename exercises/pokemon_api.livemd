@@ -7,7 +7,7 @@ Mix.install([
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"},
   {:httpoison, "~> 1.8"},
-  {:poison, "~> 5.0"}
+  {:exconstructor, "~> 1.2"}
 ])
 ```
 
@@ -37,6 +37,44 @@ mix new pokelixir
 ```
 
 Ensure you add [HTTPoison](https://github.com/edgurgel/httpoison) and [Poison](https://github.com/devinus/poison) as dependencies.
+
+```elixir
+defmodule Pokelixir do
+  defstruct [
+    :id,
+    :name,
+    :hp,
+    :attack,
+    :defense,
+    :special_attack,
+    :special_defense,
+    :speed,
+    :weight,
+    :height,
+    :types
+  ]
+
+  use ExConstructor
+
+  def get(name) do
+    {:ok, response} = HTTPoison.get("https://pokeapi.co/api/v2/pokemon/#{name}")
+    {_head, body} = Jason.decode(response.body)
+
+    ExConstructor.populate_struct(%__MODULE__{}, body)
+  end
+
+  def all() do
+    {:ok, response} = HTTPoison.get("https://pokeapi.co/api/v2/pokemon/?limit=1500")
+    Jason.decode(response.body)
+  end
+end
+
+# get a pokemon
+Pokelixir.get("charizard")
+
+# get all pokemons
+# Pokelixir.all()
+```
 
 ## Pokemon Structs
 
@@ -79,6 +117,12 @@ Here's that data represented as a `Pokemon` struct.
 }
 ```
 
+```elixir
+{:ok, response} = HTTPoison.get("https://pokeapi.co/api/v2/pokemon/charizard")
+
+Jason.decode(response.body)
+```
+
 ## Get A Pokemon
 
 We can request information about Pokemon using the [Pokemon API](https://pokeapi.co/).
@@ -116,6 +160,24 @@ response = Poison.decode!(response.body)
 </details>
 
 ## Get All Pokemon
+
+```elixir
+{:ok, response} = HTTPoison.get("https://pokeapi.co/api/v2/pokemon")
+
+Jason.decode(response.body)
+```
+
+```elixir
+{:ok, response} = HTTPoison.get("https://pokeapi.co/api/v2/pokemon?offset=20&limit=20")
+
+Jason.decode(response.body)
+```
+
+```elixir
+{:ok, response} = HTTPoison.get("https://pokeapi.co/api/v2/pokemon/6")
+
+Jason.decode(response.body)
+```
 
 You can retrieve a list of pokemon using the following URL.
 
