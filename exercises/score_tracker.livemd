@@ -87,7 +87,11 @@ defmodule ScoreTracker do
 
     iex> {:ok, pid} = ScoreTracker.start_link([])
   """
-  def start_link(_opts) do
+
+  ##### CLIENT #####
+
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, opts)
   end
 
   @doc """
@@ -99,7 +103,9 @@ defmodule ScoreTracker do
       iex> ScoreTracker.score(pid, 10)
       :ok
   """
-  def score(score_tracker_pid, amount) do
+
+  def score(pid, amount) do
+    GenServer.cast(pid, {:score, amount})
   end
 
   @doc """
@@ -111,7 +117,26 @@ defmodule ScoreTracker do
       iex> ScoreTracker.get_score(pid)
       0
   """
-  def get_score(score_tracker_pid) do
+
+  def get_score(pid) do
+    GenServer.call(pid, :get_score)
+  end
+
+  ##### SERVER #####
+
+  @impl true
+  def init(_args) do
+    {:ok, 0}
+  end
+
+  @impl true
+  def handle_cast({:score, amount}, state) do
+    {:noreply, state + amount}
+  end
+
+  @impl true
+  def handle_call(:get_score, _from, state) do
+    {:reply, state, state}
   end
 end
 ```
@@ -183,7 +208,11 @@ defmodule MultiplayerScoreTracker do
 
       iex> {:ok, pid} = MultiplayerScoreTracker.start_link([])
   """
+
+  ##### CLIENT #####
+
   def start_link(_opts) do
+    GenServer.start_link(__MODULE__, [])
   end
 
   @doc """
@@ -199,7 +228,8 @@ defmodule MultiplayerScoreTracker do
       iex> MultiplayerScoreTracker.score(pid, :abc, 10)
       :ok
   """
-  def score(multiplayer_score_tracker_pid, player_name, amount) do
+  def score(pid, player_name, amount) do
+    GenServer.cast(pid, {:score, player_name, amount})
   end
 
   @doc """
@@ -229,7 +259,8 @@ defmodule MultiplayerScoreTracker do
       iex> MultiplayerScoreTracker.all_scores(pid)
       %{player1: 10, player2: 10}
   """
-  def all_scores(multiplayer_score_tracker_pid) do
+  def all_scores(pid) do
+    GenServer.call(pid, :all_scores)
   end
 
   @doc """
@@ -239,18 +270,41 @@ defmodule MultiplayerScoreTracker do
 
     Player does not exist.
     
-    iex> {:ok, pid} = MultiplayerScoreTracker.start_link([])
-    iex> MultiplayerScoreTracker.get_score(pid, :player1)
-    nil
+     iex> {:ok, pid} = MultiplayerScoreTracker.start_link([])
+     iex> MultiplayerScoreTracker.get_score(pid, :player1)
+     nil
 
-    Player exists.
+     Player exists.
 
-    iex> {:ok, pid} = MultiplayerScoreTracker.start_link([])
-    iex> MultiplayerScoreTracker.score(pid, :abc, 10)
-    iex> MultiplayerScoreTracker.get_score(pid, :abc)
-    10
+     iex> {:ok, pid} = MultiplayerScoreTracker.start_link([])
+     iex> MultiplayerScoreTracker.score(pid, :abc, 10)
+     iex> MultiplayerScoreTracker.get_score(pid, :abc)
+     10
   """
-  def get_score(multiplayer_score_tracker_pid, player_name) do
+  def get_score(pid, player_name) do
+    GenServer.call(pid, {:get_score, player_name})
+  end
+
+  ##### SERVER #####
+
+  @impl true
+  def init(_args) do
+    {:ok, %{}}
+  end
+
+  @impl true
+  def handle_cast({:score, player_name, amount}, state) do
+    {:noreply, Map.update(state, player_name, amount, fn state -> state + amount end)}
+  end
+
+  @impl true
+  def handle_call(:all_scores, _from, state) do
+    {:reply, state, state}
+  end
+
+  @impl true
+  def handle_call({:get_score, player_name}, _from, state) do
+    {:reply, state[player_name], state}
   end
 end
 ```
