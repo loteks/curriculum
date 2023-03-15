@@ -277,7 +277,20 @@ keys = [:title, :content]
 </details>
 
 ```elixir
+defmodule Book do
+  defstruct [:title, :content]
+  @types %{title: :string, content: :string}
 
+  def changeset(initial_data, params) do
+    Ecto.Changeset.cast({initial_data, @types}, params, Map.keys(@types))
+    |> Ecto.Changeset.validate_required(Map.keys(@types))
+    |> Ecto.Changeset.validate_length(:title, min: 3, max: 100)
+  end
+end
+```
+
+```elixir
+mybook = Book.changeset(%Book{}, %{title: "WP", content: "too much text"})
 ```
 
 ## Schemaless Changesets
@@ -373,7 +386,35 @@ end
 </details>
 
 ```elixir
+defmodule NewBook do
+  defstruct [:title, :content, :author, :is_licensed, :is_published]
 
+  @types %{
+    title: :string,
+    content: :string,
+    author: :string,
+    is_licensed: :boolean,
+    is_published: :boolean
+  }
+
+  def changeset(initial_data, params) do
+    Ecto.Changeset.cast({initial_data, @types}, params, Map.keys(@types))
+    |> Ecto.Changeset.validate_required([:title, :content])
+    |> Ecto.Changeset.validate_length(:title, min: 3, max: 100)
+    |> Ecto.Changeset.validate_acceptance(:is_licensed)
+    |> Ecto.Changeset.validate_acceptance(:is_published)
+  end
+end
+```
+
+```elixir
+mybook =
+  NewBook.changeset(%NewBook{}, %{
+    title: "WIP",
+    content: "too much text",
+    is_published: true,
+    is_licensed: true
+  })
 ```
 
 ## Mark As Completed
