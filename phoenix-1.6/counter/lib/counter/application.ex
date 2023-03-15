@@ -16,6 +16,7 @@ defmodule Counter.Application do
       CounterWeb.Endpoint,
       # Start a worker by calling: Counter.Worker.start_link(arg)
       # {Counter.Worker, arg}
+      
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
