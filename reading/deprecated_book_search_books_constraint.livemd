@@ -1,9 +1,11 @@
+<!-- livebook:{"file_entries":[{"name":"book_deleted.png","type":"attachment"},{"name":"display_form_authors_search.png","type":"attachment"},{"name":"edit_book_page.png","type":"attachment"},{"name":"edit_book_page_ready_to_submit.png","type":"attachment"},{"name":"list_book_all_authors.png","type":"attachment"},{"name":"list_book_all_authors_with_author_name.png","type":"attachment"},{"name":"list_book_by_author.png","type":"attachment"},{"name":"list_books_page.png","type":"attachment"},{"name":"new_book_create_book.png","type":"attachment"},{"name":"new_book_page.png","type":"attachment"},{"name":"show_book_created_book.png","type":"attachment"},{"name":"show_page_after_update.png","type":"attachment"}]} -->
+
 # Book Search: Books
 
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"}
 ])
@@ -12,7 +14,7 @@ Mix.install([
 ## Navigation
 
 [Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new)
+[Report An Issue](https://github.com/DockYard-Academy/curriculum/issues/new)
 
 ## Setup
 
@@ -32,7 +34,7 @@ Overall, one-to-many relationships are an important part of database design and 
 
 <!-- livebook:{"break_markdown":true} -->
 
-### `has_many` and `belongs_to`
+### `has_many` And `belongs_to`
 
 In the context of one-to-many relationships, "has many" is used to describe the relationship between the one side of the relationship and the many side. For example, in a instructor-student relationship, the instructor "has many" students.
 
@@ -121,7 +123,7 @@ We've generated the following migration for books.
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-# priv/repo/migrations/_create_books.exs
+# Priv/repo/migrations/_create_books.exs
 
 defmodule BookSearch.Repo.Migrations.CreateBooks do
   use Ecto.Migration
@@ -170,11 +172,11 @@ Run migrations.
 $ mix ecto.migrate
 ```
 
-## Books and Authors Schema Association
+## Books And Authors Schema Association
 
 We've associated authors and books in our Database. However, we have not associated them in our schemas. We'll need this association to access the `book.author` field of a book or the `author.books` field of the author.
 
-### has_many/3
+### Has_many/3
 
 We can use the [has_many/3](https://hexdocs.pm/ecto/Ecto.Schema.html#has_many/3) macro to indicate a one-to-many association with another schema.
 
@@ -205,7 +207,7 @@ end
 
 <!-- livebook:{"break_markdown":true} -->
 
-### belongs_to/3
+### Belongs_to/3
 
 To indicate our books belong to a single author, we need to add the [belongs_to/3](https://hexdocs.pm/ecto/Ecto.Schema.html#belongs_to/3) relationship.
 Replace `field :author_id, :id` with the `belongs_to/3` macro.
@@ -239,7 +241,7 @@ In the Elixir programming language, the Ecto framework provides a set of functio
 
 <!-- livebook:{"break_markdown":true} -->
 
-### build_assoc/3
+### Build_assoc/3
 
 [build_assoc/3](https://hexdocs.pm/ecto/Ecto.html#build_assoc/3) is a function in the Elixir programming language that is used to create a new record in a related table and associate it with an existing record in the current table. It is part of the Ecto framework, which is a domain-specific language for writing queries and interacting with databases in Elixir.
 
@@ -259,7 +261,7 @@ Here is an example of how we might use `build_assoc` in our code:
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-# Define the association between the instructors and students tables in your Ecto models
+# Define The Association Between The Instructors And Students Tables In Your Ecto Models
 
 defmodule School.instructor do
   use Ecto.Schema
@@ -278,21 +280,21 @@ defmodule School.Student do
   end
 end
 
-# Now you can use `build_assoc` in your code to create a new student and associate it with a specific instructor
+# Now You Can Use `build_assoc` In Your Code To Create A New Student And Associate It With A Specific Instructor
 
-# Find the instructor record in the database
+# Find The Instructor Record In The Database
 instructor = School.get_instructor!(instructor.id)
 
-# Use `build_assoc` to create a new student and associate it with the instructor
+# Use `build_assoc` To Create A New Student And Associate It With The Instructor
 student = build_assoc(instructor, :students, %{name: "Jon"})
 
-# Save the new student to the database
+# Save The New Student To The Database
 {:ok, student} = School.Repo.insert(student)
 ```
 
 <!-- livebook:{"break_markdown":true} -->
 
-### put_assoc/4
+### Put_assoc/4
 
 [put_assoc/4](https://hexdocs.pm/ecto/Ecto.Changeset.html#put_assoc/4) puts the given association entry or entries as a change in the changeset. This allows us to work with associations as a whole. For example, we can use `put_assoc/4` to update all student associations for a given instructor changeset.
 
@@ -323,7 +325,7 @@ instructor
 |> Ecto.Changeset.change()
 |> Ecto.Changeset.put_assoc(:students, [%Student{name: "John"}])
 
-# The above would return a instructor changeset similar to the following:
+# The Above Would Return A Instructor Changeset Similar To The Following:
 %Ecto.Changeset<
   action: nil,
   changes: %{
@@ -377,7 +379,7 @@ Instead, `put_assoc/4` is a better solution when we need to replace the entirety
 
 <!-- livebook:{"break_markdown":true} -->
 
-### cast_assoc/3
+### Cast_assoc/3
 
 [cast_assoc/3](https://hexdocs.pm/ecto/Ecto.Changeset.html#cast_assoc/3) works similarly to `put_assoc/4` as it works with the entire association at once, however it's best used with external data we need to cast/validate with a changeset.
 
@@ -422,14 +424,14 @@ The test output should include errors similar to the following.
 
 <!-- livebook:{"break_markdown":true} -->
 
-### list_books/0
+### List_books/0
 
 Let's fix these tests, starting with `"list_books/0 returns all books"`.
 
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-# test/book_search/books_test.exs
+# Test/book_search/books_test.exs
 
 test "list_books/0 returns all books" do
   book = book_fixture()
@@ -443,7 +445,7 @@ Let's import the `AuthorFixtures` and use the `author_fixture/1` function to cre
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-# import the AuthorFixtures where we already import BooksFixtures
+# Import The AuthorFixtures Where We Already Import BooksFixtures
 import BookSearch.BooksFixtures
 import BookSearch.AuthorsFixtures
 ```
@@ -598,7 +600,7 @@ $ mix test test/book_search/books_test.exs:14
 
 <!-- livebook:{"break_markdown":true} -->
 
-### get_book!/1
+### Get_book!/1
 
 In the next test `"get_book!/1 returns the book with the given id"` we need to associate the author with the book.
 
@@ -834,7 +836,7 @@ We'll need authors to associate with our books, so add the `BookSearch.AuthorsFi
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-# add the import below the existing BookSearch.BooksFixtures import.
+# Add The Import Below The Existing BookSearch.BooksFixtures Import.
 import BookSearch.BooksFixtures
 import BookSearch.AuthorsFixtures
 ```
@@ -880,7 +882,7 @@ Replace `Routes.book_path` with `Routes.author_book_path`. `Routes.author_book_p
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-# lib/book_search_web/templates/books/index.html.heex
+# Lib/book_search_web/templates/books/index.html.heex
 
 <h1>Listing Books</h1>
 
@@ -939,7 +941,7 @@ However, our test isn't very comprehensive. For example, the route is nested und
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/list_books_page.png)
+![](files/list_books_page.png)
 
 ## BookController.new/2
 
@@ -1005,7 +1007,7 @@ We should be able to visit http://localhost:4000/authors/1/books/new to view the
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/new_book_page.png)
+![](files/new_book_page.png)
 
 ## BookController.create/2
 
@@ -1238,7 +1240,7 @@ Now we can visit http://localhost:4000/authors/1/books/new.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/new_book_create_book.png)
+![](files/new_book_create_book.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -1246,7 +1248,7 @@ Then submit the form to create a new book.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/show_book_created_book.png)
+![](files/show_book_created_book.png)
 
 ## Books.list_books/1
 
@@ -1394,7 +1396,7 @@ Now we should be able to visit the edit page on http://localhost:4000/authors/1/
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/edit_book_page.png)
+![](files/edit_book_page.png)
 
 ## BookController.update/2
 
@@ -1484,7 +1486,7 @@ Now we can visit http://localhost:4000/authors/1/book/1/edit.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/edit_book_page_ready_to_submit.png)
+![](files/edit_book_page_ready_to_submit.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -1492,7 +1494,7 @@ Then submit the form to edit our book.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/show_page_after_update.png)
+![](files/show_page_after_update.png)
 
 ## BookController.delete/2
 
@@ -1555,7 +1557,7 @@ Now we can visit http://localhost:4000/authors/1/books and press the **Delete** 
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/book_deleted.png)
+![](files/book_deleted.png)
 
 ## List All Books
 
@@ -1723,7 +1725,7 @@ We should be able to visit http://localhost:4000/books to view all books. Consid
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/list_book_all_authors.png)
+![](files/list_book_all_authors.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -1770,7 +1772,7 @@ Looking good! That's the power of associating data!
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/list_book_all_authors_with_author_name.png)
+![](files/list_book_all_authors_with_author_name.png)
 
 ## List All Books By Author
 
@@ -1835,7 +1837,7 @@ Now we can visit http://localhost:4000/authors/1/books to view only the books fo
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/list_book_by_author.png)
+![](files/list_book_by_author.png)
 
 ## Search Books
 
@@ -1846,7 +1848,7 @@ First, let's add a form to the book index page. We're going to pass the action f
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-# lib/book_search_web/templates/book/index.html.heex
+# Lib/book_search_web/templates/book/index.html.heex
 
 <h1>Listing Books</h1>
 
@@ -1985,7 +1987,7 @@ Now the form will not display when we visit http://localhost:4000/authors/1/book
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/display_form_authors_search.png)
+![](files/display_form_authors_search.png)
 
 <!-- livebook:{"break_markdown":true} -->
 

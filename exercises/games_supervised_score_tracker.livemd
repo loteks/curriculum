@@ -3,7 +3,7 @@
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"}
 ])
@@ -11,141 +11,127 @@ Mix.install([
 
 ## Navigation
 
-[Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
-
-## Setup
-
-Ensure you type the `ea` keyboard shortcut to evaluate all Elixir cells before starting. Alternatively you can evaluate the Elixir cells as you read.
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Games: Supervised Score Tracker">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/supervised_stack.livemd">Supervised Stack</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../reading/task.livemd">Task</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>
 
 ## Games: Supervised Score Tracker
 
-Refactor your existing [Games: Score Tracker](./games_score_tracker.livemd) module to be a named process and configure it with your [Games Supervisor](./games_supervisor_setup.livemd).
-Ensure your existing [Games: Score Tracker](./games_score_tracker.livemd) test suite continue to pass. You may need to alter it slightly now
-that `Games.ScoreTracker` is a named process.
+You're going to setup your [Games](../exercises/games.livemd) project as a supervised mix project.
 
-If you don't already have a `ScoreTracker` module you can use the one below.
+Then, create a `Games.ScoreTracker` [GenServer](https://hexdocs.pm/elixir/GenServer.html) which will track a player score as they play different games.
 
-```elixir
-defmodule ScoreTracker do
-  use GenServer
+Decide on point rewards for winning a game such as:
 
-  def start_link(opts) do
-    name = Keyword.get(opts, :name, __MODULE__)
-    GenServer.start_link(__MODULE__, [], name: name)
-  end
+* **guessing game**: 5 points
+* **rock paper scissors**: 10 points
+* **wordle**: 25 points
 
-  def add(pid \\ __MODULE__, points) do
-    GenServer.call(pid, {:add, points})
-  end
-
-  def get(pid \\ __MODULE__) do
-    GenServer.call(pid, :get)
-  end
-
-  @impl true
-  def init(_opts) do
-    {:ok, 0}
-  end
-
-  @impl true
-  def handle_call(:get, _from, state) do
-    {:reply, state, state}
-  end
-
-  @impl true
-  def handle_call({:add, points}, _from, state) do
-    {:reply, state + points, state + points}
-  end
-end
-```
-
-### Bonus: Track Scores
-
-Whenever a player wins a round of [Guessing Game](./games_guessing_game.livemd), [RockPaperScissors](./games_rock_paper_scissors.livemd), or [Wordle](./games_wordle.livemd), increase the player's score.
-
-**(Optional)** Consider printing the current score every time you increment it to make debugging and visual display easier.
-**(Optional)** Each game can be worth the same amount of points, or you might vary the points depending on the game.
+Increase the `ScoreTracker`'s score whenever a user wins the game.
 
 <!-- livebook:{"break_markdown":true} -->
 
-### Bonus: Score Menu
+### Requirements
 
-In the previously implemented [Games.Menu](./games_menu.livemd) module, implement a `Total Score` option which prints the current total score. It should use the `Games.ScoreTracker` module to get the current score.
+* The initial score tracker state should be `0`.
+* Handle an asynchronous `{:add_points, points}` message to increment the score state.
+* Handle a synchronous `:get_score` message to retrieve the current score.
+* `Games.ScoreTracker` should be started as a named process by the supervisor.
+* Create the `start_link/1`, `add_points/1`, and `current_score/1` functions as documented below.
+* Write a full suite of tests including at least the following cases:
+  * `"current_score/1 retrieves the current score"`
+  * `"add_points/1 adds points to the score"`
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+# Games.ScoreTracker should be a named process, so we don't need to provide the pid.
+{:ok, _pid} = Games.ScoreTracker.start_link()
+:ok = Games.ScoreTracker.add_points(10)
+:ok = Games.ScoreTracker.add_points(10)
+20 = Games.ScoreTracker.current_score()
+```
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Score Menu
+
+Create a `"score"` command for the game menu that displays the user's current score. For example:
 
 ```
 $ ./games
-Select a game:
+What game would you like to play?
 1. Guessing Game
 2. Rock Paper Scissors
 3. Wordle
-4. Total Score
-Select: 4
-Your current session score: 3
-```
 
-## Mark As Completed
+enter "stop" to exit
+enter "score" to view your current score
+score
 
-<!-- livebook:{"attrs":{"source":"file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, \"\"), \".livemd\")\n\nsave_name =\n  case Path.basename(__DIR__) do\n    \"reading\" -> \"games_supervised_score_tracker_reading\"\n    \"exercises\" -> \"games_supervised_score_tracker_exercise\"\n  end\n\nprogress_path = __DIR__ <> \"/../progress.json\"\nexisting_progress = File.read!(progress_path) |> Jason.decode!()\n\ndefault = Map.get(existing_progress, save_name, false)\n\nform =\n  Kino.Control.form(\n    [\n      completed: input = Kino.Input.checkbox(\"Mark As Completed\", default: default)\n    ],\n    report_changes: true\n  )\n\nTask.async(fn ->\n  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do\n    File.write!(\n      progress_path,\n      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)\n    )\n  end\nend)\n\nform","title":"Track Your Progress"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+==================================================
+Your score is 0
+==================================================
 
-```elixir
-file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, ""), ".livemd")
+What game would you like to play?
+1. Guessing Game
+2. Rock Paper Scissors
+3. Wordle
 
-save_name =
-  case Path.basename(__DIR__) do
-    "reading" -> "games_supervised_score_tracker_reading"
-    "exercises" -> "games_supervised_score_tracker_exercise"
-  end
-
-progress_path = __DIR__ <> "/../progress.json"
-existing_progress = File.read!(progress_path) |> Jason.decode!()
-
-default = Map.get(existing_progress, save_name, false)
-
-form =
-  Kino.Control.form(
-    [
-      completed: input = Kino.Input.checkbox("Mark As Completed", default: default)
-    ],
-    report_changes: true
-  )
-
-Task.async(fn ->
-  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do
-    File.write!(
-      progress_path,
-      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)
-    )
-  end
-end)
-
-form
+enter "stop" to exit
+enter "score" to view your current score
 ```
 
 ## Commit Your Progress
 
-Run the following in your command line from the curriculum folder to track and save your progress in a Git commit.
-Ensure that you do not already have undesired or unrelated changes by running `git status` or by checking the source control tab in Visual Studio Code.
+DockYard Academy now recommends you use the latest [Release](https://github.com/DockYard-Academy/curriculum/releases) rather than forking or cloning our repository.
+
+Run `git status` to ensure there are no undesirable changes.
+Then run the following in your command line from the `curriculum` folder to commit your progress.
 
 ```
-$ git checkout -b games-supervised-score-tracker-exercise
 $ git add .
-$ git commit -m "finish games supervised score tracker exercise"
-$ git push origin games-supervised-score-tracker-exercise
+$ git commit -m "finish Games: Supervised Score Tracker exercise"
+$ git push
 ```
 
-Create a pull request from your `games-supervised-score-tracker-exercise` branch to your `solutions` branch.
-Please do not create a pull request to the DockYard Academy repository as this will spam our PR tracker.
+We're proud to offer our open-source curriculum free of charge for anyone to learn from at their own pace.
 
-**DockYard Academy Students Only:**
+We also offer a paid course where you can learn from an instructor alongside a cohort of your peers.
+We will accept applications for the June-August 2023 cohort soon.
 
-Notify your instructor by including `@BrooklinJazz` in your PR description to get feedback.
-You (or your instructor) may merge your PR into your solutions branch after review.
+## Navigation
 
-If you are interested in joining the next academy cohort, [sign up here](https://academy.dockyard.com/) to receive more news when it is available.
-
-## Up Next
-
-| Previous                                                              | Next                           |
-| --------------------------------------------------------------------- | -----------------------------: |
-| [Games: Supervisor Setup](../exercises/games_supervisor_setup.livemd) | [Task](../reading/task.livemd) |
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Games: Supervised Score Tracker">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/supervised_stack.livemd">Supervised Stack</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../reading/task.livemd">Task</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>

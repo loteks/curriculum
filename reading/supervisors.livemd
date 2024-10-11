@@ -3,7 +3,7 @@
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"}
 ])
@@ -11,18 +11,30 @@ Mix.install([
 
 ## Navigation
 
-[Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Supervisors">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/traffic_light_server.livemd">Traffic Light Server</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../exercises/supervisor_drills.livemd">Supervisor Drills</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>
 
 ## Review Questions
 
 * What kinds of problems do supervisors solve?
 * How do we use supervisors to make our application fault-tolerant?
 * Why might we use each supervisor restart strategy (`:one_for_one`, `:one_for_all`, `:rest_for_one`)?
-
-## Setup
-
-Ensure you type the `ea` keyboard shortcut to evaluate all Elixir cells before starting. Alternatively, you can evaluate the Elixir cells as you read.
 
 ## Fault Tolerance
 
@@ -51,7 +63,7 @@ pid =
     raise "error"
   end)
 
-# allow the process time to crash
+# Allow The Process Time To Crash
 Process.sleep(100)
 
 "I still run."
@@ -60,7 +72,7 @@ Process.sleep(100)
 When a linked process crashes, it will also crashed the process that spawned it. Uncomment the code below, and you'll see it crashes the current Livebook process. Re-comment the code when finished.
 
 ```elixir
-# spawn_link(fn -> raise "error" end)
+# spawn_link(fn -> Raise "error" End)
 ```
 
 That means if we start a [GenServer](https://hexdocs.pm/elixir/GenServer.html) (or other process) **unsupervised** it will raise an error if it crashes.
@@ -91,6 +103,14 @@ The same is true if we manually exit a process using [Process.exit/2](https://he
 ```elixir
 # {:ok, pid} = GenServer.start_link(UnsupervisedWorker, [])
 # Process.exit(pid, :exit)
+```
+
+If you would like to learn more about fault tolerance and error handling, Joe Armstrong created an incredible video on the subject.
+
+<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=ZOsvgwOR6G0&ab_channel=KentComputing\")","title":"Erlang Master Class 2: Video 3 - Handling errors"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+
+```elixir
+YouTube.new("https://www.youtube.com/watch?v=ZOsvgwOR6G0&ab_channel=KentComputing")
 ```
 
 ## Supervisors
@@ -175,7 +195,7 @@ When we kill one of the processes under the supervision tree, it will be restart
 pid = :c.pid(0, 727, 0)
 ```
 
-Then, kill the process using [Process.exit/2](https://hexdocs.pm/elixir/1.12/Process.html#exit/2).
+Then, kill the process using [Process.exit/2](https://hexdocs.pm/elixir/Process.html#exit/2).
 
 <!-- livebook:{"force_markdown":true} -->
 
@@ -202,7 +222,7 @@ However, sometimes we want different restart strategies such as `:one_for_all` a
 Restart only the worker that crashed.
 
 ```mermaid
-flowchart TD 
+flowchart TD
     Supervisor
     Supervisor --> P1
     Supervisor --> P2
@@ -225,7 +245,7 @@ In the diagram above, only P2 crashed, so only P2 will be restarted by the super
 Restart all of the child workers.
 
 ```mermaid
-flowchart TD 
+flowchart TD
     Supervisor
     Supervisor --> P1
     Supervisor --> P2
@@ -249,7 +269,7 @@ P2 crashed, which led to all the other child processes to be terminated, then al
 Restart child workers in order after the crashed process.
 
 ```mermaid
-flowchart TD 
+flowchart TD
     Supervisor
     Supervisor --> P1
     Supervisor --> P2
@@ -266,7 +286,7 @@ flowchart TD
     class P2,P3,..,Pn restarted
 ```
 
-P2 crashed, the child processes after it in the start order are terminated, then P2 and the other terminated child processes are are restarted.
+P2 crashed, the child processes after it in the start order are terminated, then P2 and the other terminated child processes are restarted.
 
 ## Restart Strategy Examples
 
@@ -418,7 +438,7 @@ So the timeline of crashes would be:
 * 9 seconds: `Bomb1` crashes (`Bomb2` restarted)
 
 ```elixir
-# {:ok, supervisor_pid} = Supervisor.start_link(children, strategy: :rest_for_one, max_restarts: 5)
+# {:ok, Supervisor_pid} = Supervisor.start_link(children, Strategy: :rest_for_one, Max_restarts: 5)
 ```
 
 ### Your Turn
@@ -451,68 +471,91 @@ Uncomment the following code to see the crash timeline, then re-comment it.
 * [Elixir Schools: Supervisor Strategies](https://elixirschool.com/blog/supervisor-strategies)
 * [Elixir Schools: OTP Supervisors](https://elixirschool.com/en/lessons/advanced/otp_supervisors)
 
-## Mark As Completed
+## Supervised Mix Projects
 
-<!-- livebook:{"attrs":{"source":"file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, \"\"), \".livemd\")\n\nsave_name =\n  case Path.basename(__DIR__) do\n    \"reading\" -> \"supervisors_reading\"\n    \"exercises\" -> \"supervisors_exercise\"\n  end\n\nprogress_path = __DIR__ <> \"/../progress.json\"\nexisting_progress = File.read!(progress_path) |> Jason.decode!()\n\ndefault = Map.get(existing_progress, save_name, false)\n\nform =\n  Kino.Control.form(\n    [\n      completed: input = Kino.Input.checkbox(\"Mark As Completed\", default: default)\n    ],\n    report_changes: true\n  )\n\nTask.async(fn ->\n  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do\n    File.write!(\n      progress_path,\n      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)\n    )\n  end\nend)\n\nform","title":"Track Your Progress"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+Supervised mix projects use an [Application](https://hexdocs.pm/elixir/Application.html) module that defines application callbacks.
+
+The application module is configured in `mix.exs` in the `application/0` function.
+
+<!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, ""), ".livemd")
+def application do
+  [
+    extra_applications: [:logger],
+    mod: {MyApp.Application, []}
+  ]
+end
+```
 
-save_name =
-  case Path.basename(__DIR__) do
-    "reading" -> "supervisors_reading"
-    "exercises" -> "supervisors_exercise"
+The application module typically lives in the project folder in a `my_app/application.ex` file and contains the logic to start the application. In a supervised application, this module starts a supervision tree.
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+defmodule MyApp.Application do
+  # See https://hexdocs.pm/elixir/Application.html
+  # for more information on OTP Applications
+  @moduledoc false
+
+  use Application
+
+  @impl true
+  def start(_type, _args) do
+    children = [
+      # Starts a worker by calling: RockPaperScissors.Worker.start_link(arg)
+      # {RockPaperScissors.Worker, arg}
+    ]
+
+    # See https://hexdocs.pm/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: MyApp.Supervisor]
+    Supervisor.start_link(children, opts)
   end
+end
+```
 
-progress_path = __DIR__ <> "/../progress.json"
-existing_progress = File.read!(progress_path) |> Jason.decode!()
+We can generate a mix project with all of the above scaffolding using the `--sup` flag, or add it manually to an existing project.
 
-default = Map.get(existing_progress, save_name, false)
-
-form =
-  Kino.Control.form(
-    [
-      completed: input = Kino.Input.checkbox("Mark As Completed", default: default)
-    ],
-    report_changes: true
-  )
-
-Task.async(fn ->
-  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do
-    File.write!(
-      progress_path,
-      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)
-    )
-  end
-end)
-
-form
+```
+mix new my_app --sup
 ```
 
 ## Commit Your Progress
 
-Run the following in your command line from the curriculum folder to track and save your progress in a Git commit.
-Ensure that you do not already have undesired or unrelated changes by running `git status` or by checking the source control tab in Visual Studio Code.
+DockYard Academy now recommends you use the latest [Release](https://github.com/DockYard-Academy/curriculum/releases) rather than forking or cloning our repository.
+
+Run `git status` to ensure there are no undesirable changes.
+Then run the following in your command line from the `curriculum` folder to commit your progress.
 
 ```
-$ git checkout -b supervisors-reading
 $ git add .
-$ git commit -m "finish supervisors reading"
-$ git push origin supervisors-reading
+$ git commit -m "finish Supervisors reading"
+$ git push
 ```
 
-Create a pull request from your `supervisors-reading` branch to your `solutions` branch.
-Please do not create a pull request to the DockYard Academy repository as this will spam our PR tracker.
+We're proud to offer our open-source curriculum free of charge for anyone to learn from at their own pace.
 
-**DockYard Academy Students Only:**
+We also offer a paid course where you can learn from an instructor alongside a cohort of your peers.
+We will accept applications for the June-August 2023 cohort soon.
 
-Notify your instructor by including `@BrooklinJazz` in your PR description to get feedback.
-You (or your instructor) may merge your PR into your solutions branch after review.
+## Navigation
 
-If you are interested in joining the next academy cohort, [sign up here](https://academy.dockyard.com/) to receive more news when it is available.
-
-## Up Next
-
-| Previous                           | Next                                                     |
-| ---------------------------------- | -------------------------------------------------------: |
-| [Timer](../exercises/timer.livemd) | [Supervised Stack](../exercises/supervised_stack.livemd) |
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Supervisors">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/traffic_light_server.livemd">Traffic Light Server</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../exercises/supervisor_drills.livemd">Supervisor Drills</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>

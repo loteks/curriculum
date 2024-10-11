@@ -3,7 +3,7 @@
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"}
 ])
@@ -11,12 +11,24 @@ Mix.install([
 
 ## Navigation
 
-[Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
-
-## Setup
-
-Ensure you type the `ea` keyboard shortcut to evaluate all Elixir cells before starting. Alternatively you can evaluate the Elixir cells as you read.
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Mix">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/pascals_triangle.livemd">Pascal's Triangle</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../exercises/games.livemd">Games Project</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>
 
 ## Review Questions
 
@@ -38,9 +50,11 @@ mix new app_name
 
 Where `app_name` is the name of the project.
 
+<!-- livebook:{"break_markdown":true} -->
+
 ### Your Turn
 
-Create a `hello_world` application in this course's `projects` folder.
+Create a `hello_world` application.
 
 You should notice that the command generated several files.
 
@@ -194,7 +208,7 @@ Finished in 0.02 seconds (0.00s async, 0.02s sync)
 Randomized with seed 768874
 ```
 
-## File and Module Names
+## File And Module Names
 
 Mix compiles all `.ex` files under the `lib/` folder and bundles them together into a project.
 
@@ -271,6 +285,10 @@ end
 
 Then, call the `HelloWorld.Name.random/0` function from the `HelloWorld` module in `hello_world.ex`.
 
+<!-- livebook:{"break_markdown":true} -->
+
+<!-- livebook:{"force_markdown":true} -->
+
 ```elixir
 defmodule HelloWorld do
   def hello do
@@ -278,6 +296,8 @@ defmodule HelloWorld do
   end
 end
 ```
+
+<!-- livebook:{"break_markdown":true} -->
 
 Run your project in the [IEx](https://hexdocs.pm/iex/IEx.html) shell and ensure the `HelloWorld.hello/0` function works as expected.
 
@@ -297,87 +317,14 @@ It defines two public functions, `project/0` and `application/0`.
 
 The `project/0` function returns project configuration such as the project name, current version, and installed dependencies. The `project/0` function relies on the private `deps/0` function to provide a list of dependencies.
 
-The `application/0` function returns application configuration used to generate an application manifest file `_build/ebin/hello_world.app`.
-This file is used under the hood to run the project. For more, you can see the [Application](https://hexdocs.pm/elixir/main/Application.html) module
-on HexDocs.
-
-### Your Turn
-
-Note the original contents of the application manifest `build/ebin/hello_world.app` should be similar to:
-
-```
-{application,hello_world,
-             [{applications,[kernel,stdlib,elixir,logger]},
-              {description,"hello_world"},
-              {modules,['Elixir.HelloWorld']},
-              {registered,[]},
-              {vsn,"0.1.0"}]}.
-```
-
-Change the `application/0` function to return an empty list.
-
-<!-- livebook:{"force_markdown":true} -->
-
-```elixir
-def application do
-  []
-end
-```
-
-Run `mix compile`.
-
-The `_build/ebin/hello_world.app` file will no longer have the `logger` application.
-
-```
-{application,hello_world,
-             [{applications,[kernel,stdlib,elixir]},
-              {description,"hello_world"},
-              {modules,['Elixir.HelloWorld']},
-              {registered,[]},
-              {vsn,"0.1.0"}]}.
-```
-
-Mix provides an abstraction for building Elixir applications, so
-we don't need to be concerned with these details. However, it's useful to be aware that nothing is magic. Changes to `mix.exs` directly impact the compiled `_build` folder.
-
-<!-- livebook:{"force_markdown":true} -->
-
-```elixir
-defmodule HelloWorld.MixProject do
-  use Mix.Project
-
-  def project do
-    [
-      app: :hello_world,
-      version: "0.1.0",
-      elixir: "~> 1.13",
-      start_permanent: Mix.env() == :prod,
-      deps: deps()
-    ]
-  end
-
-  # Run "mix help compile.app" to learn about applications.
-  def application do
-    [
-      extra_applications: [:logger]
-    ]
-  end
-
-  # Run "mix help deps" to learn about dependencies.
-  defp deps do
-    [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-    ]
-  end
-end
-```
+The `application/0` function returns application configuration used to generate an application manifest file  in the `_build` folder. This file is used under the hood to run the project. For more, you can see the [Application](https://hexdocs.pm/elixir/main/Application.html) module
+on HexDocs. Sometimes removing the `_build` folder and recompiling a project can resolve compilation bugs.
 
 ## Dependencies
 
 Other developers create open-source Elixir projects hosted on GitHub, which we can add as dependencies to our project.
 
-There is a massive ecosystem of Elixir projects to that you don't have to
+There is a massive ecosystem of Elixir projects, which means you don't have to
 reinvent the wheel and solve already solved problems. The [Hex.pm](https://hex.pm/) contains a list of available Elixir projects you may find useful. For a curated list, check out the [awesome-elixir](https://github.com/h4cc/awesome-elixir) project.
 
 To install a dependency, include the name of the project and desired version in a tuple inside the `deps/0` function
@@ -526,68 +473,41 @@ For more on [Mix](https://hexdocs.pm/mix/Mix.html), consider reading the followi
 * [elixir-lang: Intro to Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html)
 * [HexDocs: Mix](https://hexdocs.pm/mix/Mix.html#content)
 
-## Mark As Completed
-
-<!-- livebook:{"attrs":{"source":"file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, \"\"), \".livemd\")\n\nsave_name =\n  case Path.basename(__DIR__) do\n    \"reading\" -> \"mix_reading\"\n    \"exercises\" -> \"mix_exercise\"\n  end\n\nprogress_path = __DIR__ <> \"/../progress.json\"\nexisting_progress = File.read!(progress_path) |> Jason.decode!()\n\ndefault = Map.get(existing_progress, save_name, false)\n\nform =\n  Kino.Control.form(\n    [\n      completed: input = Kino.Input.checkbox(\"Mark As Completed\", default: default)\n    ],\n    report_changes: true\n  )\n\nTask.async(fn ->\n  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do\n    File.write!(\n      progress_path,\n      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)\n    )\n  end\nend)\n\nform","title":"Track Your Progress"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
-
-```elixir
-file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, ""), ".livemd")
-
-save_name =
-  case Path.basename(__DIR__) do
-    "reading" -> "mix_reading"
-    "exercises" -> "mix_exercise"
-  end
-
-progress_path = __DIR__ <> "/../progress.json"
-existing_progress = File.read!(progress_path) |> Jason.decode!()
-
-default = Map.get(existing_progress, save_name, false)
-
-form =
-  Kino.Control.form(
-    [
-      completed: input = Kino.Input.checkbox("Mark As Completed", default: default)
-    ],
-    report_changes: true
-  )
-
-Task.async(fn ->
-  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do
-    File.write!(
-      progress_path,
-      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)
-    )
-  end
-end)
-
-form
-```
-
 ## Commit Your Progress
 
-Run the following in your command line from the curriculum folder to track and save your progress in a Git commit.
-Ensure that you do not already have undesired or unrelated changes by running `git status` or by checking the source control tab in Visual Studio Code.
+DockYard Academy now recommends you use the latest [Release](https://github.com/DockYard-Academy/curriculum/releases) rather than forking or cloning our repository.
+
+Run `git status` to ensure there are no undesirable changes.
+Then run the following in your command line from the `curriculum` folder to commit your progress.
 
 ```
-$ git checkout -b mix-reading
 $ git add .
-$ git commit -m "finish mix reading"
-$ git push origin mix-reading
+$ git commit -m "finish Mix reading"
+$ git push
 ```
 
-Create a pull request from your `mix-reading` branch to your `solutions` branch.
-Please do not create a pull request to the DockYard Academy repository as this will spam our PR tracker.
+We're proud to offer our open-source curriculum free of charge for anyone to learn from at their own pace.
 
-**DockYard Academy Students Only:**
+We also offer a paid course where you can learn from an instructor alongside a cohort of your peers.
+We will accept applications for the June-August 2023 cohort soon.
 
-Notify your instructor by including `@BrooklinJazz` in your PR description to get feedback.
-You (or your instructor) may merge your PR into your solutions branch after review.
+## Navigation
 
-If you are interested in joining the next academy cohort, [sign up here](https://academy.dockyard.com/) to receive more news when it is available.
-
-## Up Next
-
-| Previous                                                         | Next                                            |
-| ---------------------------------------------------------------- | ----------------------------------------------: |
-| [Phone Number Parsing](../exercises/phone_number_parsing.livemd) | [Games: Setup](../exercises/games_setup.livemd) |
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Mix">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/pascals_triangle.livemd">Pascal's Triangle</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../exercises/games.livemd">Games Project</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>

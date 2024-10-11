@@ -1,19 +1,21 @@
+<!-- livebook:{"file_entries":[{"name":"phoenix_forms_book_form.png","type":"attachment"},{"name":"phoenix_forms_book_form_failure.png","type":"attachment"},{"name":"phoenix_forms_book_form_failure_with_error_tags.png","type":"attachment"}]} -->
+
 # Phoenix Forms
 
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"},
-  {:ecto, "~> 3.9"}
+  {:ecto, "~> 3.9.5"}
 ])
 ```
 
 ## Navigation
 
 [Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
+[Report An Issue](https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
 
 ## Setup
 
@@ -59,7 +61,7 @@ $ mix phx.server
 
 <!-- livebook:{"break_markdown":true} -->
 
-### Create the `BookForm` Form.
+### Create The `BookForm` Form.
 
 Replace the existing `index.html.heex` file with the following form content.
 
@@ -100,7 +102,7 @@ This will create a book form on our main page. When we submit the form, it sends
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/phoenix_forms_book_form.png)
+![](files/phoenix_forms_book_form.png)
 
 ## Form Action
 
@@ -318,7 +320,7 @@ Now when we submit the form with invalid data we'll see an error message. The ch
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/phoenix_forms_book_form_failure.png)
+![](files/phoenix_forms_book_form_failure.png)
 
 ## Error Handling
 
@@ -370,7 +372,7 @@ Failure messages now display on each form input.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/phoenix_forms_book_form_failure_with_error_tags.png)
+![](files/phoenix_forms_book_form_failure_with_error_tags.png)
 
 ## Further Reading
 

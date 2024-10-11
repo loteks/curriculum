@@ -1,9 +1,11 @@
+<!-- livebook:{"file_entries":[{"name":"hello_stack_heap.png","type":"attachment"},{"name":"hello_stored_in_memory.png","type":"attachment"},{"name":"memory_blank.png","type":"attachment"},{"name":"memory_consumption_filled_livebook_runtime.png","type":"attachment"},{"name":"memory_consumption_livebook_runtime.png","type":"attachment"},{"name":"stack-overflow-without-tail-recursion.png","type":"attachment"},{"name":"stack_and_heap.png","type":"attachment"},{"name":"stack_frame_steps123.png","type":"attachment"},{"name":"stack_frame_steps4567.png","type":"attachment"}]} -->
+
 # Computer Hardware
 
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"}
 ])
@@ -11,12 +13,24 @@ Mix.install([
 
 ## Navigation
 
-[Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
-
-## Setup
-
-Ensure you type the `ea` keyboard shortcut to evaluate all Elixir cells before starting. Alternatively you can evaluate the Elixir cells as you read.
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Computer Hardware">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../reading/start_here.livemd">Start Here</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../reading/command_line.livemd">Command Line</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>
 
 ## Review Questions
 
@@ -54,13 +68,13 @@ YouTube.new("https://www.youtube.com/watch?v=Z5JC9Ve1sfI")
 We store information in memory. We can think of memory as a series of cells that
 can each store some value.
 
-![](images/memory_blank.png)
+![](files/memory_blank.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
 The string "hello" might be stored in memory like so.
 
-![](images/hello_stored_in_memory.png)
+![](files/hello_stored_in_memory.png)
 
 Under the hood, memory is stored in electrical signals called bits.
 
@@ -81,7 +95,7 @@ The **stack** holds functions and variables as they execute.
 
 The **heap** is a free memory resource where we can put pretty much any value that we want.
 
-![](images/stack_and_heap.png)
+![](files/stack_and_heap.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -92,7 +106,7 @@ on the **stack** and it points to the location of memory in the heap.
 hello = "world"
 ```
 
-![](images/hello_stack_heap.png)
+![](files/hello_stack_heap.png)
 
 ### Stack Frames
 
@@ -103,14 +117,14 @@ As we execute functions, they are stored in a stack frame.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/stack_frame_steps123.png)
+![](files/stack_frame_steps123.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
 The last function to be added onto the stack will be the first one executed and removed from the
 stack.
 
-![](images/stack_frame_steps4567.png)
+![](files/stack_frame_steps4567.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -130,7 +144,7 @@ The stack has a limited amount of memory allocated to it. When we over-allocate 
 overflow. For example, if we continued executing functions in functions eventually the
 stack would (generally) run out of space.
 
-![Stack Overflow](images/stack-overflow-without-tail-recursion.png)
+![Stack Overflow](files/stack-overflow-without-tail-recursion.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -144,7 +158,7 @@ For example, loading a large file's contents into memory is a performance concer
 You can see the memory this livebook consumes in the Runtime Settings panel. Press `s` then `r` to open
 the settings panel.
 
-![](images/memory_consumption_livebook_runtime.png)
+![](files/memory_consumption_livebook_runtime.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -158,11 +172,13 @@ goes down because the `list` is no longer in memory.
 # list = Enum.to_list(1..1000000)
 ```
 
-![](images/memory_consumption_filled_livebook_runtime.png)
+![](files/memory_consumption_filled_livebook_runtime.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
 For more on Memory, there is a more indepth video by Crash Course Computer Science.
+
+<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=fpnE6UAfbtU\")","title":"Registers and Ram: Crash Course Computer Science"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=fpnE6UAfbtU")
@@ -179,6 +195,8 @@ storage device. Unlike memory, it is often used for persistent values rather tha
 exist during the runtime of the program.
 
 For more on memory and storage, you can watch this video by Crash Course Computer Science.
+
+<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=TQCr9RV7twk\")","title":"Memory & Storage: Crash Course Computer Science"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=TQCr9RV7twk")
@@ -197,6 +215,8 @@ For example, it's far faster to perform ten addition operations than it is to pe
 
 Try evaluating the two cells below and notice how the first is far faster (nearly instant).
 
+> You don't need to understand the specifics of [Enum](https://hexdocs.pm/elixir/Enum.html) and that works yet. The only important difference between these examples is the size of the data. The first is for `10` elements, the second is for `10_000_000`.
+
 ```elixir
 Enum.map(1..10, fn each -> each + 2 end)
 ```
@@ -206,6 +226,8 @@ Enum.map(1..10_000_000, fn each -> each + 2 end)
 ```
 
 For more on the CPU there is an great video by Crash Course Computer Science.
+
+<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=FZGugFqdr60\")","title":"The Central Processing Unit (CPU) Crash Course Computer Science"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=FZGugFqdr60")
@@ -217,68 +239,41 @@ Performance issues can significantly impact a program, leading to slowness or ev
 
 In addition, performance issues generally have a more significant impact on lower-quality computers. Thus, your program may be performant on your personal computer but cause problems on lower-performance hardware.
 
-## Mark As Completed
-
-<!-- livebook:{"attrs":{"source":"file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, \"\"), \".livemd\")\n\nsave_name =\n  case Path.basename(__DIR__) do\n    \"reading\" -> \"computer_hardware_reading\"\n    \"exercises\" -> \"computer_hardware_exercise\"\n  end\n\nprogress_path = __DIR__ <> \"/../progress.json\"\nexisting_progress = File.read!(progress_path) |> Jason.decode!()\n\ndefault = Map.get(existing_progress, save_name, false)\n\nform =\n  Kino.Control.form(\n    [\n      completed: input = Kino.Input.checkbox(\"Mark As Completed\", default: default)\n    ],\n    report_changes: true\n  )\n\nTask.async(fn ->\n  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do\n    File.write!(\n      progress_path,\n      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)\n    )\n  end\nend)\n\nform","title":"Track Your Progress"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
-
-```elixir
-file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, ""), ".livemd")
-
-save_name =
-  case Path.basename(__DIR__) do
-    "reading" -> "computer_hardware_reading"
-    "exercises" -> "computer_hardware_exercise"
-  end
-
-progress_path = __DIR__ <> "/../progress.json"
-existing_progress = File.read!(progress_path) |> Jason.decode!()
-
-default = Map.get(existing_progress, save_name, false)
-
-form =
-  Kino.Control.form(
-    [
-      completed: input = Kino.Input.checkbox("Mark As Completed", default: default)
-    ],
-    report_changes: true
-  )
-
-Task.async(fn ->
-  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do
-    File.write!(
-      progress_path,
-      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)
-    )
-  end
-end)
-
-form
-```
-
 ## Commit Your Progress
 
-Run the following in your command line from the curriculum folder to track and save your progress in a Git commit.
-Ensure that you do not already have undesired or unrelated changes by running `git status` or by checking the source control tab in Visual Studio Code.
+DockYard Academy now recommends you use the latest [Release](https://github.com/DockYard-Academy/curriculum/releases) rather than forking or cloning our repository.
+
+Run `git status` to ensure there are no undesirable changes.
+Then run the following in your command line from the `curriculum` folder to commit your progress.
 
 ```
-$ git checkout -b computer-hardware-reading
 $ git add .
-$ git commit -m "finish computer hardware reading"
-$ git push origin computer-hardware-reading
+$ git commit -m "finish Computer Hardware reading"
+$ git push
 ```
 
-Create a pull request from your `computer-hardware-reading` branch to your `solutions` branch.
-Please do not create a pull request to the DockYard Academy repository as this will spam our PR tracker.
+We're proud to offer our open-source curriculum free of charge for anyone to learn from at their own pace.
 
-**DockYard Academy Students Only:**
+We also offer a paid course where you can learn from an instructor alongside a cohort of your peers.
+We will accept applications for the June-August 2023 cohort soon.
 
-Notify your instructor by including `@BrooklinJazz` in your PR description to get feedback.
-You (or your instructor) may merge your PR into your solutions branch after review.
+## Navigation
 
-If you are interested in joining the next academy cohort, [sign up here](https://academy.dockyard.com/) to receive more news when it is available.
-
-## Up Next
-
-| Previous                                                 | Next                                               |
-| -------------------------------------------------------- | -------------------------------------------------: |
-| [Pascals Triangle](../exercises/pascals_triangle.livemd) | [Big O Notation](../reading/big_o_notation.livemd) |
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Computer Hardware">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../reading/start_here.livemd">Start Here</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../reading/command_line.livemd">Command Line</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>

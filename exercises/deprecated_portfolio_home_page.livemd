@@ -1,9 +1,11 @@
+<!-- livebook:{"file_entries":[{"name":"portfolio_home_page_exercise.png","type":"attachment"}]} -->
+
 # Portfolio: Home Page
 
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"}
 ])
@@ -12,7 +14,7 @@ Mix.install([
 ## Navigation
 
 [Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
+[Report An Issue](https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
 
 ## Home Page
 
@@ -38,7 +40,7 @@ You may take inspiration from the previous [Home Page](./home_page.livemd) exerc
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/portfolio_home_page_exercise.png)
+![](files/portfolio_home_page_exercise.png)
 
 <!-- livebook:{"break_markdown":true} -->
 

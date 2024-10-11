@@ -3,7 +3,7 @@
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"}
 ])
@@ -11,154 +11,118 @@ Mix.install([
 
 ## Navigation
 
-[Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Metric Conversion">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/drill-patternmatching-replace-nils.livemd">Replacing Nils</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../reading/guards.livemd">Guards</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>
 
 ## Metric Conversion
 
 You're going to build an app to convert metric measurements such as **millimeters**, **centimeters**, **meters**, and **kilometers** according to the following table.
 
-<!-- livebook:{"attrs":{"source":"[\n  [unit: :millimeter, value: 1, meter: 0.001],\n  [unit: :centimeter, value: 1, meter: 0.01],\n  [unit: :meter, value: 1, meter: 1],\n  [unit: :kilometer, value: 1, meter: 1000],\n] |> Kino.DataTable.new()","title":"Metric Conversion Table"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
-
-```elixir
-[
-  [unit: :millimeter, value: 1, meter: 0.001],
-  [unit: :centimeter, value: 1, meter: 0.01],
-  [unit: :meter, value: 1, meter: 1],
-  [unit: :kilometer, value: 1, meter: 1000]
-]
-|> Kino.DataTable.new()
-```
+| unit       | value | meters |
+| ---------- | ----- | ------ |
+| millimeter | 1.0   | 0.001  |
+| centimeter | 1.0   | 0.01   |
+| meter      | 1.0   | 1.0    |
+| kilometer  | 1.0   | 1000.0 |
 
 Users provide values using `{from_unit, value}` tuples, and the desired unit to convert to.
 
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-Metric.convert({:centimeter, 100}, :meter)
+Metric.convert({:centimeter, 100.0}, :meter)
 1.0
 ```
 
-The unit to convert from, and the unit to convert to can be either `:millimeter`, `:centimeter`, `:meter`, or `:kilometer`. The output should always be a **float**.
+Units can be `:millimeter`, `:centimeter`, `:meter`, or `:kilometer`. Values are always floats.
+
+<details style="background-color: lightgreen; padding: 1rem; margin: 1rem 0;">
+<summary>Example Solution</summary>
 
 ```elixir
 defmodule Metric do
-  @moduledoc """
-  Documentation for `Metric`
-  """
+  def convert(from, to) do
+    meters = to_meter(from)
 
-  @doc """
-  Convert one measurement to another.
-  We've used math values in the result
+    case to do
+      :millimeter -> meters / 0.001
+      :centimeter -> meters / 0.01
+      :meter -> meters / 1.0
+      :kilometer -> meters / 1000.0
+    end
+  end
 
-  ## Examples
+  defp to_meter({unit, value}) do
+    case unit do
+      :millimeter -> value * 0.001
+      :centimeter -> value * 0.01
+      :meter -> value * 1.0
+      :kilometer -> value * 1000.0
+    end
+  end
+end
+```
 
-    Convert unit to meters.
+</details>
 
-    iex> Metric.convert({:millimeter, 1}, :meter)
-    0.001
-
-    iex> Metric.convert({:centimeter, 1}, :meter)
-    0.01
-
-    iex> Metric.convert({:meter, 1}, :meter)
-    1.0
-
-    iex> Metric.convert({:kilometer, 1}, :meter)
-    1000
-
-    Convert meters to unit.
-
-    iex> Metric.convert({:meter, 1}, :millimeter)
-    1000.0
-
-    iex> Metric.convert({:meter, 1}, :centimeter)
-    100.0
-
-    iex> Metric.convert({:meter, 1}, :meter)
-    1.0
-
-    iex> Metric.convert({:meter, 1}, :kilometer)
-    0.001
-
-    Convert unit to unit.
-
-    iex> Metric.convert({:centimeter, 1000}, :kilometer)
-    0.01
-
-    iex> Metric.convert({:millimeter, 10}, :centimeter)
-    1.0
-
-    iex> Metric.convert({:kilometer, 10}, :centimeter)
-    1000000
-  """
+```elixir
+defmodule Metric do
   def convert(from, to) do
   end
 end
 ```
 
-## Mark As Completed
-
-<!-- livebook:{"attrs":{"source":"file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, \"\"), \".livemd\")\n\nsave_name =\n  case Path.basename(__DIR__) do\n    \"reading\" -> \"metric_conversion_reading\"\n    \"exercises\" -> \"metric_conversion_exercise\"\n  end\n\nprogress_path = __DIR__ <> \"/../progress.json\"\nexisting_progress = File.read!(progress_path) |> Jason.decode!()\n\ndefault = Map.get(existing_progress, save_name, false)\n\nform =\n  Kino.Control.form(\n    [\n      completed: input = Kino.Input.checkbox(\"Mark As Completed\", default: default)\n    ],\n    report_changes: true\n  )\n\nTask.async(fn ->\n  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do\n    File.write!(\n      progress_path,\n      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)\n    )\n  end\nend)\n\nform","title":"Track Your Progress"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
-
-```elixir
-file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, ""), ".livemd")
-
-save_name =
-  case Path.basename(__DIR__) do
-    "reading" -> "metric_conversion_reading"
-    "exercises" -> "metric_conversion_exercise"
-  end
-
-progress_path = __DIR__ <> "/../progress.json"
-existing_progress = File.read!(progress_path) |> Jason.decode!()
-
-default = Map.get(existing_progress, save_name, false)
-
-form =
-  Kino.Control.form(
-    [
-      completed: input = Kino.Input.checkbox("Mark As Completed", default: default)
-    ],
-    report_changes: true
-  )
-
-Task.async(fn ->
-  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do
-    File.write!(
-      progress_path,
-      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)
-    )
-  end
-end)
-
-form
-```
-
 ## Commit Your Progress
 
-Run the following in your command line from the curriculum folder to track and save your progress in a Git commit.
-Ensure that you do not already have undesired or unrelated changes by running `git status` or by checking the source control tab in Visual Studio Code.
+DockYard Academy now recommends you use the latest [Release](https://github.com/DockYard-Academy/curriculum/releases) rather than forking or cloning our repository.
+
+Run `git status` to ensure there are no undesirable changes.
+Then run the following in your command line from the `curriculum` folder to commit your progress.
 
 ```
-$ git checkout -b metric-conversion-exercise
 $ git add .
-$ git commit -m "finish metric conversion exercise"
-$ git push origin metric-conversion-exercise
+$ git commit -m "finish Metric Conversion exercise"
+$ git push
 ```
 
-Create a pull request from your `metric-conversion-exercise` branch to your `solutions` branch.
-Please do not create a pull request to the DockYard Academy repository as this will spam our PR tracker.
+We're proud to offer our open-source curriculum free of charge for anyone to learn from at their own pace.
 
-**DockYard Academy Students Only:**
+We also offer a paid course where you can learn from an instructor alongside a cohort of your peers.
+We will accept applications for the June-August 2023 cohort soon.
 
-Notify your instructor by including `@BrooklinJazz` in your PR description to get feedback.
-You (or your instructor) may merge your PR into your solutions branch after review.
+## Navigation
 
-If you are interested in joining the next academy cohort, [sign up here](https://academy.dockyard.com/) to receive more news when it is available.
-
-## Up Next
-
-| Previous                                                                         | Next                               |
-| -------------------------------------------------------------------------------- | ---------------------------------: |
-| [Rock Paper Scissors Pattern Matching](../exercises/rps_pattern_matching.livemd) | [Guards](../reading/guards.livemd) |
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Metric Conversion">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/drill-patternmatching-replace-nils.livemd">Replacing Nils</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../reading/guards.livemd">Guards</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>

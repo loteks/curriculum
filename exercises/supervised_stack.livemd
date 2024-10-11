@@ -3,7 +3,7 @@
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"}
 ])
@@ -11,14 +11,34 @@ Mix.install([
 
 ## Navigation
 
-[Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Supervised Stack">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/supervisor_drills.livemd">Supervisor Drills</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../exercises/games_supervised_score_tracker.livemd">Games: Supervised Score Tracker</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>
 
 ## Supervised Stack
 
-Previously we created a [Stack](./stack_server.livemd) [GenServer](https://hexdocs.pm/elixir/GenServer.html) process.
+You're going to create a stack project that starts a name [Stack](./stack_server.livemd) GenServer process under a supervisor.
 
-We've made a slight modification to the `Stack` process by adding a `start_link/1` function so this named `Stack` can be started under a [Supervisor](https://hexdocs.pm/elixir/Supervisor.html).
+```
+mix new stack
+```
+
+Here's an example Stack GenServer you can use.
 
 ```elixir
 defmodule Stack do
@@ -47,24 +67,7 @@ defmodule Stack do
 end
 ```
 
-We're able to push and pop elements off of the stack.
-
-```elixir
-{:ok, stack_pid} = GenServer.start_link(Stack, [])
-
-GenServer.call(stack_pid, {:push, 1}) |> IO.inspect(label: "push")
-GenServer.call(stack_pid, {:push, 2}) |> IO.inspect(label: "push")
-GenServer.call(stack_pid, {:push, 3}) |> IO.inspect(label: "push")
-
-GenServer.call(stack_pid, :pop) |> IO.inspect(label: "pop")
-GenServer.call(stack_pid, :pop) |> IO.inspect(label: "pop")
-GenServer.call(stack_pid, :pop) |> IO.inspect(label: "pop")
-
-# the final state is empty.
-:sys.get_state(stack_pid)
-```
-
-However, there's a bug. If we try to `pop/1` an item off of an empty stack, the process
+We're able to push and pop elements off of the stack. However, there's a bug. If we try to `pop/1` an item off of an empty stack, the process
 will crash due to a function clause error because the `handle_call/2` function expects a list with one or more elements.
 
 Uncomment the following code to watch the `Stack` crash.
@@ -79,14 +82,14 @@ Normally, we could handle this by using control flow. For example, we could make
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-# return `nil` when the stack is empty.
+# Return `nil` When The Stack Is Empty.
 @impl true
 def handle_call(:pop, _from, []) do
   {:reply, nil, []}
 end
 ```
 
-Instead, you're going to start the Stack process under a supervisor so that it will be restarted when it crashes. In the Elixir cell below, start the `Stack` process under a supervisor so that it will restart with an empty stack when it crashes.
+Instead, you're going to start the `Stack` process under a supervisor in your application so that it will be restarted when it crashes.
 
 <details style="background-color: lightgreen; padding: 1rem; margin: 1rem 0;">
 <summary>Example Solution</summary>
@@ -101,82 +104,54 @@ children = [
 
 </details>
 
-Keep in mind, if you have already started a supervisor with the `Stack` process, your livebook may crash. You can resolve this issue by simply re-running the cell below to start the supervisor again.
+<!-- livebook:{"break_markdown":true} -->
+
+### Crash The Stack
+
+Open the [IEx](https://hexdocs.pm/iex/IEx.html) shell and send the `Stack` a `:pop` message to cause it to crash and restart.
+
+<!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-
-```
-
-You should be able to send a `:pop` message to the `Stack` process and the [Supervisor](https://hexdocs.pm/elixir/Supervisor.html) will restart the `Stack` process.
-
-Uncomment and evaluate the code below to test your supervisor.
-
-```elixir
-# GenServer.call(Stack, :pop)
-```
-
-## Mark As Completed
-
-<!-- livebook:{"attrs":{"source":"file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, \"\"), \".livemd\")\n\nsave_name =\n  case Path.basename(__DIR__) do\n    \"reading\" -> \"supervised_stack_reading\"\n    \"exercises\" -> \"supervised_stack_exercise\"\n  end\n\nprogress_path = __DIR__ <> \"/../progress.json\"\nexisting_progress = File.read!(progress_path) |> Jason.decode!()\n\ndefault = Map.get(existing_progress, save_name, false)\n\nform =\n  Kino.Control.form(\n    [\n      completed: input = Kino.Input.checkbox(\"Mark As Completed\", default: default)\n    ],\n    report_changes: true\n  )\n\nTask.async(fn ->\n  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do\n    File.write!(\n      progress_path,\n      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)\n    )\n  end\nend)\n\nform","title":"Track Your Progress"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
-
-```elixir
-file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, ""), ".livemd")
-
-save_name =
-  case Path.basename(__DIR__) do
-    "reading" -> "supervised_stack_reading"
-    "exercises" -> "supervised_stack_exercise"
-  end
-
-progress_path = __DIR__ <> "/../progress.json"
-existing_progress = File.read!(progress_path) |> Jason.decode!()
-
-default = Map.get(existing_progress, save_name, false)
-
-form =
-  Kino.Control.form(
-    [
-      completed: input = Kino.Input.checkbox("Mark As Completed", default: default)
-    ],
-    report_changes: true
-  )
-
-Task.async(fn ->
-  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do
-    File.write!(
-      progress_path,
-      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)
-    )
-  end
-end)
-
-form
+$ iex -S mix
+iex> GenServer.call(Stack, :pop)
 ```
 
 ## Commit Your Progress
 
-Run the following in your command line from the curriculum folder to track and save your progress in a Git commit.
-Ensure that you do not already have undesired or unrelated changes by running `git status` or by checking the source control tab in Visual Studio Code.
+DockYard Academy now recommends you use the latest [Release](https://github.com/DockYard-Academy/curriculum/releases) rather than forking or cloning our repository.
+
+Run `git status` to ensure there are no undesirable changes.
+Then run the following in your command line from the `curriculum` folder to commit your progress.
 
 ```
-$ git checkout -b supervised-stack-exercise
 $ git add .
-$ git commit -m "finish supervised stack exercise"
-$ git push origin supervised-stack-exercise
+$ git commit -m "finish Supervised Stack exercise"
+$ git push
 ```
 
-Create a pull request from your `supervised-stack-exercise` branch to your `solutions` branch.
-Please do not create a pull request to the DockYard Academy repository as this will spam our PR tracker.
+We're proud to offer our open-source curriculum free of charge for anyone to learn from at their own pace.
 
-**DockYard Academy Students Only:**
+We also offer a paid course where you can learn from an instructor alongside a cohort of your peers.
+We will accept applications for the June-August 2023 cohort soon.
 
-Notify your instructor by including `@BrooklinJazz` in your PR description to get feedback.
-You (or your instructor) may merge your PR into your solutions branch after review.
+## Navigation
 
-If you are interested in joining the next academy cohort, [sign up here](https://academy.dockyard.com/) to receive more news when it is available.
-
-## Up Next
-
-| Previous                                     | Next                                     |
-| -------------------------------------------- | ---------------------------------------: |
-| [Supervisors](../reading/supervisors.livemd) | [Dominoes](../exercises/dominoes.livemd) |
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Supervised Stack">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/supervisor_drills.livemd">Supervisor Drills</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../exercises/games_supervised_score_tracker.livemd">Games: Supervised Score Tracker</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>

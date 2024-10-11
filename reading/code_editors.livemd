@@ -1,9 +1,11 @@
+<!-- livebook:{"file_entries":[{"name":"auto-save.png","type":"attachment"},{"name":"explorer_tab.png","type":"attachment"},{"name":"initiate_liveshare.png","type":"attachment"},{"name":"join_liveshare_url.png","type":"attachment"},{"name":"keyboard%20shortcuts.png","type":"attachment"},{"name":"live_share_link_copied.png","type":"attachment"},{"name":"live_share_session_running_tab.png","type":"attachment"},{"name":"live_share_tab.png","type":"attachment"},{"name":"quick_open_search.png","type":"attachment"},{"name":"recommended_extensions.png","type":"attachment"},{"name":"search.png","type":"attachment"},{"name":"show%20all%20commands.png","type":"attachment"},{"name":"source_control_stage_all_files.png","type":"attachment"},{"name":"source_control_stage_file.png","type":"attachment"},{"name":"source_control_view.png","type":"attachment"},{"name":"unstage_changes.png","type":"attachment"},{"name":"view%20toggle%20terminal.png","type":"attachment"},{"name":"workspace-trust-dialog.png","type":"attachment"}]} -->
+
 # Code Editors
 
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"}
 ])
@@ -11,12 +13,24 @@ Mix.install([
 
 ## Navigation
 
-[Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
-
-## Setup
-
-Ensure you type the `ea` keyboard shortcut to evaluate all Elixir cells before starting. Alternatively, you can evaluate the Elixir cells as you read.
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Code Editors">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../reading/livebook.livemd">Livebook</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../reading/iex.livemd">IEx</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>
 
 ## Review Questions
 
@@ -89,7 +103,7 @@ With the curriculum project open in visual studio code, open the Extensions tab 
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/recommended_extensions.png)
+![](files/recommended_extensions.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -107,7 +121,7 @@ There are lots of useful extensions provided by the community. We've tried to be
 
 The Activity Bar contains the Explorer tab.
 
-![](images/explorer_tab.png)
+![](files/explorer_tab.png)
 
 Open the Explorer tab to see all the files and folders in a project.
 You can create new files and folders from this tab.
@@ -123,7 +137,7 @@ you can search for the name of a file and press <kbd>Enter</kbd> to view it in t
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/quick_open_search.png)
+![](files/quick_open_search.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -143,13 +157,13 @@ uses Quick Open with a `>` symbol. You could also open Quick Open and then press
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/show%20all%20commands.png)
+![](files/show%20all%20commands.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
 For example, you may wish to use the autosave command to save files automatically.
 
-![](images/auto-save.png)
+![](files/auto-save.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -160,7 +174,7 @@ Specific shortcuts are generally beyond the scope of this course, but you may wi
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/keyboard%20shortcuts.png)
+![](files/keyboard%20shortcuts.png)
 
 ## Integrated Terminal
 
@@ -173,7 +187,7 @@ Open and close the integrated terminal with the `View: Toggle Terminal` command.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/view%20toggle%20terminal.png)
+![](files/view%20toggle%20terminal.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -203,7 +217,7 @@ The search tab is also useful for **search-and-replace**.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/search.png)
+![](files/search.png)
 
 ## Source Control
 
@@ -211,16 +225,16 @@ The Source Control tab allows you to manage git source control. Instead of with 
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/source_control_view.png)
+![](files/source_control_view.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
 You can stage a file by hovering it and pressing the stage button <i class="ri-add-line"></i>.
 
-![](images/source_control_stage_file.png)
+![](files/source_control_stage_file.png)
 
 Or stage all files by hovering over **Changes** and pressing the stage all button <i class="ri-add-line"></i>.
-![](images/source_control_stage_all_files.png)
+![](files/source_control_stage_all_files.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -228,13 +242,13 @@ Similarly you can unstage changes or a single file pressing the unstage button <
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/unstage_changes.png)
+![](files/unstage_changes.png)
 
 ## Live Share
 
 You can share and join collaborative development sessions with the LiveShare tab.
 
-![](images/live_share_tab.png)
+![](files/live_share_tab.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -257,14 +271,14 @@ flowchart
 
 To start a LiveShare session, press the **Share** button.
 
-![](images/initiate_liveshare.png)
+![](files/initiate_liveshare.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
 This creates a LiveShare session and automatically copies an invitation link that will look like this:
 `https://prod.liveshare.vsengsaas.visualstudio.com/join?20A7B9A2A82856BC29CE86120852C16E23EB`
 
-![](images/live_share_link_copied.png)
+![](files/live_share_link_copied.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -274,7 +288,7 @@ and enter the URL.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/join_liveshare_url.png)
+![](files/join_liveshare_url.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -290,7 +304,7 @@ DANGER: GRANTING READ/WRITE ACCESS TO YOUR TERMINAL ALLOWS OTHER PARTICIPANTS DA
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/live_share_session_running_tab.png)
+![](files/live_share_session_running_tab.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -302,70 +316,43 @@ join the session.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/workspace-trust-dialog.png)
-
-## Mark As Completed
-
-<!-- livebook:{"attrs":{"source":"file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, \"\"), \".livemd\")\n\nsave_name =\n  case Path.basename(__DIR__) do\n    \"reading\" -> \"code_editors_reading\"\n    \"exercises\" -> \"code_editors_exercise\"\n  end\n\nprogress_path = __DIR__ <> \"/../progress.json\"\nexisting_progress = File.read!(progress_path) |> Jason.decode!()\n\ndefault = Map.get(existing_progress, save_name, false)\n\nform =\n  Kino.Control.form(\n    [\n      completed: input = Kino.Input.checkbox(\"Mark As Completed\", default: default)\n    ],\n    report_changes: true\n  )\n\nTask.async(fn ->\n  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do\n    File.write!(\n      progress_path,\n      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)\n    )\n  end\nend)\n\nform","title":"Track Your Progress"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
-
-```elixir
-file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, ""), ".livemd")
-
-save_name =
-  case Path.basename(__DIR__) do
-    "reading" -> "code_editors_reading"
-    "exercises" -> "code_editors_exercise"
-  end
-
-progress_path = __DIR__ <> "/../progress.json"
-existing_progress = File.read!(progress_path) |> Jason.decode!()
-
-default = Map.get(existing_progress, save_name, false)
-
-form =
-  Kino.Control.form(
-    [
-      completed: input = Kino.Input.checkbox("Mark As Completed", default: default)
-    ],
-    report_changes: true
-  )
-
-Task.async(fn ->
-  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do
-    File.write!(
-      progress_path,
-      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)
-    )
-  end
-end)
-
-form
-```
+![](files/workspace-trust-dialog.png)
 
 ## Commit Your Progress
 
-Run the following in your command line from the curriculum folder to track and save your progress in a Git commit.
-Ensure that you do not already have undesired or unrelated changes by running `git status` or by checking the source control tab in Visual Studio Code.
+DockYard Academy now recommends you use the latest [Release](https://github.com/DockYard-Academy/curriculum/releases) rather than forking or cloning our repository.
+
+Run `git status` to ensure there are no undesirable changes.
+Then run the following in your command line from the `curriculum` folder to commit your progress.
 
 ```
-$ git checkout -b code-editors-reading
 $ git add .
-$ git commit -m "finish code editors reading"
-$ git push origin code-editors-reading
+$ git commit -m "finish Code Editors reading"
+$ git push
 ```
 
-Create a pull request from your `code-editors-reading` branch to your `solutions` branch.
-Please do not create a pull request to the DockYard Academy repository as this will spam our PR tracker.
+We're proud to offer our open-source curriculum free of charge for anyone to learn from at their own pace.
 
-**DockYard Academy Students Only:**
+We also offer a paid course where you can learn from an instructor alongside a cohort of your peers.
+We will accept applications for the June-August 2023 cohort soon.
 
-Notify your instructor by including `@BrooklinJazz` in your PR description to get feedback.
-You (or your instructor) may merge your PR into your solutions branch after review.
+## Navigation
 
-If you are interested in joining the next academy cohort, [sign up here](https://academy.dockyard.com/) to receive more news when it is available.
-
-## Up Next
-
-| Previous                               | Next                         |
-| -------------------------------------- | ---------------------------: |
-| [Livebook](../reading/livebook.livemd) | [IEx](../reading/iex.livemd) |
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Code Editors">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../reading/livebook.livemd">Livebook</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../reading/iex.livemd">IEx</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>

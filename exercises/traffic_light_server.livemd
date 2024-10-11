@@ -3,7 +3,7 @@
 ```elixir
 Mix.install([
   {:jason, "~> 1.4"},
-  {:kino, "~> 0.8.0", override: true},
+  {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"}
 ])
@@ -11,14 +11,34 @@ Mix.install([
 
 ## Navigation
 
-[Return Home](../start.livemd)<span style="padding: 0 30px"></span>
-[Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Traffic Light Server">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/stack.livemd">Tested Stack</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../reading/supervisors.livemd">Supervisors</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>
 
 ## Traffic Light Server
 
-You're going to create a `TrafficLightServer` [GenServer](https://hexdocs.pm/elixir/GenServer.html) that mimics a traffic light.
+You're going to create a `TrafficLights` mix project that manages traffic.
 
-<!-- livebook:{"break_markdown":true} -->
+```
+mix new traffic_lights
+```
+
+Create a `TrafficLights.Light` [GenServer](https://hexdocs.pm/elixir/GenServer.html) that mimics a traffic light transitioning from green to yellow to red.
 
 ```mermaid
 flowchart LR
@@ -31,49 +51,38 @@ flowchart LR
   style R fill: coral
 ```
 
-<!-- livebook:{"break_markdown":true} -->
+This is also a simple example of building a [Finite-state machine](https://en.wikipedia.org/wiki/Finite-state_machine) using [GenServer](https://hexdocs.pm/elixir/GenServer.html).
 
-### Server Callbacks
+### Requirements
 
-The `TrafficLightServer` should define some [Server API](https://hexdocs.pm/elixir/1.12/GenServer.html#module-client-server-apis) callback functions using [GenServer.handle_call/3](https://hexdocs.pm/elixir/GenServer.html#handle_call/3) and [GenServer.init/1](https://hexdocs.pm/elixir/GenServer.html#init/1).
-
-The `TrafficLightServer`'s state should start as `:green`, then you should be able to send it a `:transition` message that will transition the state from `:green`, to `:yellow`, to `:red`.
-
-The `TrafficLightServer` should also be able to receive a `:current_light` message which returns the current light.
-
-<!-- livebook:{"force_markdown":true} -->
-
-```elixir
-{:ok, pid} = GenServer.start_link(TrafficLightServer, [])
-
-:green = GenServer.call(pid, :current_light)
-:yellow = GenServer.call(pid, :transition)
-:red = GenServer.call(pid, :transition)
-:green = GenServer.call(pid, :transition)
-```
-
-<!-- livebook:{"break_markdown":true} -->
-
-### Client API
-
-The `TrafficLightServer` should define some [Client API](https://hexdocs.pm/elixir/1.12/GenServer.html#module-client-server-apis) functions `transition/1`, `start_link/1` and `current_light/1` that abstract the underlying [GenServer](https://hexdocs.pm/elixir/GenServer.html) implementation details.
+* The initial traffic light state should start as `:green`. Store light states as atoms `:green`, `:yellow`, and `:red`.
+* Handle an asynchronous `:transition` message to transition the current light.
+* Handle a synchronous `:current_light` message to retrieve the current light.
+* Create the `transition/1` and `current_light/1` messages as documented below.
+* Write a full suite of tests for the `TrafficLights` module.
 
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-{:ok, pid} = TrafficLightServer.start_link([])
+{:ok, pid} = TrafficLights.Light.start_link([])
 
-:green = TrafficLightServer.current_light(pid)
-:yellow = TrafficLightServer.transition(pid)
-:red = TrafficLightServer.transition(pid)
-:green = TrafficLightServer.transition(pid)
+:green = TrafficLights.Light.current_light(pid)
+:ok = TrafficLights.Light.transition(pid)
+
+:yellow = TrafficLights.Light.current_light(pid)
+:ok = TrafficLights.Light.transition(pid)
+
+:red = TrafficLights.Light.current_light(pid)
+:ok = TrafficLights.Light.transition(pid)
+
+:green = TrafficLights.Light.current_light(pid)
 ```
 
 <details style="background-color: lightgreen; padding: 1rem; margin: 1rem 0;">
 <summary>Example Solution</summary>
 
 ```elixir
-defmodule TrafficLightServer do
+defmodule TrafficLights.Light do
   use GenServer
 
   def start_link(_opts) do
@@ -114,55 +123,18 @@ end
 
 </details>
 
-Implement the `TrafficLightServer` as documented below. You will also need to define the GenServer callback functions [GenServer.init/1](https://hexdocs.pm/elixir/GenServer.html#init/1) and [GenServer.handle_call/3](https://hexdocs.pm/elixir/GenServer.html#handle_call/3).
+## TrafficGrid
 
-```elixir
-defmodule TrafficLightServer do
-  @moduledoc """
-  Documentation for `TrafficLightServer`
-  """
-  use GenServer
-
-  @doc """
-  Start a TrafficLightServer linked to the current caller process.
-  """
-  def start_link(opts) do
-  end
-
-  @doc """
-  Transition the `TrafficLightServer`'s state.
-  :green -> :yellow -> :red
-  """
-  def transition(pid) do
-  end
-
-  @doc """
-  Get the `TrafficLightServer`'s current state.
-  """
-  def current_light(pid) do
-  end
-end
-```
-
-## Bonus: TrafficGrid
-
-You're going to create a `TrafficGrid` [GenServer](https://hexdocs.pm/elixir/GenServer.html) that manages five `TrafficLightServers`.
-
-* Create a `TrafficGrid` which stores the pids of five `TrafficLightServers`.
-* Define a `current_lights/1` function that returns the current light of each `TrafficLightServer`.
-* Define a `transition/1` function that transitions one of the five lights (in order, from beginning to end).
-* Prefer `call` over `cast` to avoid concurrency issues.
-
-<!-- livebook:{"break_markdown":true} -->
+Create a `TrafficLights.Grid` [GenServer](https://hexdocs.pm/elixir/GenServer.html) that manages five `TrafficLights.Light` processes.
 
 ```mermaid
 flowchart
-TG[TrafficGrid]
-TLS1[TrafficLightServer]
-TLS2[TrafficLightServer]
-TLS3[TrafficLightServer]
-TLS4[TrafficLightServer]
-TLS5[TrafficLightServer]
+TG[TrafficLights.Grid]
+TLS1[TrafficLights.Light]
+TLS2[TrafficLights.Light]
+TLS3[TrafficLights.Light]
+TLS4[TrafficLights.Light]
+TLS5[TrafficLights.Light]
 G1[Green]
 G2[Green]
 G3[Green]
@@ -210,51 +182,43 @@ style R5 fill:lightcoral
 
 <!-- livebook:{"break_markdown":true} -->
 
-`transition/1` Examples:
+### Requirements
+
+* The initial state of the grid should contain a list with five `TrafficLights.Light` pids in addition to any other state you want to track
+* Create a `current_lights/1` and `transition/1` function as documented below.
+* Write a full suite of tests.
 
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-iex> {:ok, pid} = TrafficGridServer.start_link([])
-iex> TrafficGridServer.transition(pid)
-[:yellow, :green, :green, :green, :green]
+{:ok, pid} = TrafficLights.Grid.start_link([])
 
-iex> TrafficGridServer.transition(pid)
-[:yellow, :yellow, :green, :green, :green]
+:ok = TrafficLights.Grid.transition(pid)
 
-iex> TrafficGridServer.transition(pid)
-[:yellow, :yellow, :yellow, :green, :green]
+[:yellow, :green, :green, :green, :green] = TrafficLights.Grid.current_lights(pid)
 
-iex> TrafficGridServer.transition(pid)
-[:yellow, :yellow, :yellow, :yellow, :green]
+:ok = TrafficLights.Grid.transition(pid)
+:ok = TrafficLights.Grid.transition(pid)
+:ok = TrafficLights.Grid.transition(pid)
+:ok = TrafficLights.Grid.transition(pid)
+:ok = TrafficLights.Grid.transition(pid)
 
-iex> TrafficGridServer.transition(pid)
-[:yellow, :yellow, :yellow, :yellow, :yellow]
+[:red, :yellow, :yellow, :yellow, :yellow] = TrafficLights.Grid.current_lights(pid)
 
-iex> TrafficGridServer.transition(pid)
-[:red, :yellow, :yellow, :yellow, :yellow]
+:ok = TrafficLights.Grid.transition(pid)
+:ok = TrafficLights.Grid.transition(pid)
+:ok = TrafficLights.Grid.transition(pid)
+:ok = TrafficLights.Grid.transition(pid)
+:ok = TrafficLights.Grid.transition(pid)
 
-iex> TrafficGridServer.transition(pid)
-[:red, :red, :yellow, :yellow, :yellow]
+[:green, :red, :red, :red, :red] = TrafficLights.Grid.current_lights(pid)
 ```
-
-`current_lights/1` Examples:
-
-<!-- livebook:{"force_markdown":true} -->
-
-```elixir
-iex> {:ok, pid} = TrafficGridServer.start_link([])
-iex> TrafficGridServer.current_lights(pid)
-[:green, :green, :green, :green, :green]
-```
-
-<!-- livebook:{"break_markdown":true} -->
 
 <details style="background-color: lightgreen; padding: 1rem; margin: 1rem 0;">
 <summary>Example Solution</summary>
 
 ```elixir
-defmodule TrafficGridServer do
+defmodule TrafficLights.Grid do
   use GenServer
 
   def start_link(_opts) do
@@ -273,7 +237,7 @@ defmodule TrafficGridServer do
   def init(_opts) do
     light_pids =
       Enum.map(1..5, fn _ ->
-        {:ok, pid} = TrafficLightServer.start_link([])
+        {:ok, pid} = TrafficLights.Light.start_link([])
         pid
       end)
 
@@ -283,9 +247,9 @@ defmodule TrafficGridServer do
   @impl true
   def handle_call(:transition, _from, state) do
     light_pid = Enum.at(state.light_pids, state.transition_index)
-    TrafficLightServer.transition(light_pid)
+    TrafficLights.Light.transition(light_pid)
 
-    lights = Enum.map(state.light_pids, &TrafficLightServer.current_light/1)
+    lights = Enum.map(state.light_pids, &TrafficLights.Light.current_light/1)
     next_transition_index = rem(state.transition_index + 1, length(state.light_pids))
 
     {:reply, lights, %{state | transition_index: next_transition_index}}
@@ -293,8 +257,7 @@ defmodule TrafficGridServer do
 
   @impl true
   def handle_call(:current_lights, _from, state) do
-    lights =
-      Enum.map(state.light_pids, fn light_pid -> TrafficLightServer.current_light(light_pid) end)
+    lights = Enum.map(state.light_pids, &TrafficLights.Light.current_light/1)
 
     {:reply, lights, state}
   end
@@ -303,109 +266,41 @@ end
 
 </details>
 
-Implement the `TrafficGrid` module as documented below. You will also have to define callback functions for the [GenServer](https://hexdocs.pm/elixir/GenServer.html)'s Client API.
-
-```elixir
-defmodule TrafficGridServer do
-  use GenServer
-
-  @doc ~S"""
-  Start the `TrafficGridServer`.
-
-  ## Examples
-
-      TrafficGridServer.start_link([])
-      {:ok, pid}
-  """
-  def start_link(_opts) do
-  end
-
-  @doc """
-  transition the current light state of the next light to transition.
-
-  ## Examples
-      
-      TrafficGridServer.transition(pid)
-      [:yellow, :green, :green, :green, :green]
-  """
-  def transition(grid_pid) do
-  end
-
-  @doc """
-  Retrieve the current light state of each managed `TrafficLightServer`.
-
-  ## Examples
-
-      TrafficGridServer.current_lights(pid)
-      [:green, :green, :green, :green, :green]
-  """
-  def current_lights(grid_pid) do
-  end
-end
-```
-
-## Mark As Completed
-
-<!-- livebook:{"attrs":{"source":"file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, \"\"), \".livemd\")\n\nsave_name =\n  case Path.basename(__DIR__) do\n    \"reading\" -> \"traffic_light_server_reading\"\n    \"exercises\" -> \"traffic_light_server_exercise\"\n  end\n\nprogress_path = __DIR__ <> \"/../progress.json\"\nexisting_progress = File.read!(progress_path) |> Jason.decode!()\n\ndefault = Map.get(existing_progress, save_name, false)\n\nform =\n  Kino.Control.form(\n    [\n      completed: input = Kino.Input.checkbox(\"Mark As Completed\", default: default)\n    ],\n    report_changes: true\n  )\n\nTask.async(fn ->\n  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do\n    File.write!(\n      progress_path,\n      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)\n    )\n  end\nend)\n\nform","title":"Track Your Progress"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
-
-```elixir
-file_name = Path.basename(Regex.replace(~r/#.+/, __ENV__.file, ""), ".livemd")
-
-save_name =
-  case Path.basename(__DIR__) do
-    "reading" -> "traffic_light_server_reading"
-    "exercises" -> "traffic_light_server_exercise"
-  end
-
-progress_path = __DIR__ <> "/../progress.json"
-existing_progress = File.read!(progress_path) |> Jason.decode!()
-
-default = Map.get(existing_progress, save_name, false)
-
-form =
-  Kino.Control.form(
-    [
-      completed: input = Kino.Input.checkbox("Mark As Completed", default: default)
-    ],
-    report_changes: true
-  )
-
-Task.async(fn ->
-  for %{data: %{completed: completed}} <- Kino.Control.stream(form) do
-    File.write!(
-      progress_path,
-      Jason.encode!(Map.put(existing_progress, save_name, completed), pretty: true)
-    )
-  end
-end)
-
-form
-```
-
 ## Commit Your Progress
 
-Run the following in your command line from the curriculum folder to track and save your progress in a Git commit.
-Ensure that you do not already have undesired or unrelated changes by running `git status` or by checking the source control tab in Visual Studio Code.
+DockYard Academy now recommends you use the latest [Release](https://github.com/DockYard-Academy/curriculum/releases) rather than forking or cloning our repository.
+
+Run `git status` to ensure there are no undesirable changes.
+Then run the following in your command line from the `curriculum` folder to commit your progress.
 
 ```
-$ git checkout -b traffic-light-server-exercise
 $ git add .
-$ git commit -m "finish traffic light server exercise"
-$ git push origin traffic-light-server-exercise
+$ git commit -m "finish Traffic Light Server exercise"
+$ git push
 ```
 
-Create a pull request from your `traffic-light-server-exercise` branch to your `solutions` branch.
-Please do not create a pull request to the DockYard Academy repository as this will spam our PR tracker.
+We're proud to offer our open-source curriculum free of charge for anyone to learn from at their own pace.
 
-**DockYard Academy Students Only:**
+We also offer a paid course where you can learn from an instructor alongside a cohort of your peers.
+We will accept applications for the June-August 2023 cohort soon.
 
-Notify your instructor by including `@BrooklinJazz` in your PR description to get feedback.
-You (or your instructor) may merge your PR into your solutions branch after review.
+## Navigation
 
-If you are interested in joining the next academy cohort, [sign up here](https://academy.dockyard.com/) to receive more news when it is available.
-
-## Up Next
-
-| Previous                                         | Next                                                 |
-| ------------------------------------------------ | ---------------------------------------------------: |
-| [Stack Server](../exercises/stack_server.livemd) | [Pokemon Server](../exercises/pokemon_server.livemd) |
+<div style="display: flex; align-items: center; width: 100%; justify-content: space-between; font-size: 1rem; color: #61758a; background-color: #f0f5f9; height: 4rem; padding: 0 1rem; border-radius: 1rem;">
+<div style="display: flex;">
+<i class="ri-home-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../start.livemd">Home</a>
+</div>
+<div style="display: flex;">
+<i class="ri-bug-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="https://github.com/DockYard-Academy/curriculum/issues/new?assignees=&labels=&template=issue.md&title=Traffic Light Server">Report An Issue</a>
+</div>
+<div style="display: flex;">
+<i class="ri-arrow-left-fill"></i>
+<a style="display: flex; color: #61758a; margin-left: 1rem;" href="../exercises/stack.livemd">Tested Stack</a>
+</div>
+<div style="display: flex;">
+<a style="display: flex; color: #61758a; margin-right: 1rem;" href="../reading/supervisors.livemd">Supervisors</a>
+<i class="ri-arrow-right-fill"></i>
+</div>
+</div>
